@@ -1,10 +1,6 @@
 from rest_framework import viewsets
-from .models import User, Image, Tier
-from .serializers import UserSerializer, ImageSerializer, TierSerializer
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+from .models import Image, Tier
+from .serializers import ImageSerializer, TierSerializer
 
 class ImageViewSet(viewsets.ModelViewSet):
     queryset = Image.objects.all()
