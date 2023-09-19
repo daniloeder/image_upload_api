@@ -1,0 +1,27 @@
+# Virtual environment directories
+venv/
+env/
+__pycache__/
+
+# Local development settings
+*.sqlite3
+*.db
+*.log
+
+# Media and static files (if you use a CDN or a separate storage service)
+media/
+static/
+
+# Secret keys and sensitive information (e.g., .env files)
+*.secret
+
+# IDE/Editor-specific files
+.vscode/
+.idea/
+*.pyc
+
+# Compiled Python files
+*.pyc
+
+# macOS system files
+.DS_Store
