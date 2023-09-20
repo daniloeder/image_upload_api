@@ -27,15 +27,3 @@ class Image(models.Model):
     
     def __str__(self):
         return f"Image by {self.user.username} uploaded at {self.uploaded_at}"
-
-class CustomTier(models.Model):
-    name = models.CharField(max_length=100)
-    allow_original_link = models.BooleanField(default=False)
-    allow_expiring_link = models.BooleanField(default=False)
-    thumbnail_sizes = models.CharField(max_length=255, help_text="Comma-separated list of thumbnail sizes (e.g., '200x200,400x400')")
-    expiring_link_seconds = models.PositiveIntegerField(
-        help_text="Expiring link duration in seconds (between 300 and 30000)"
-    )
-
-    def __str__(self):
-        return self.name
