@@ -13,16 +13,6 @@ class TierViewSet(viewsets.ModelViewSet):
     queryset = Tier.objects.all()
     serializer_class = TierSerializer
 
-class CustomTierViewSet(viewsets.ModelViewSet):  # Define CustomTierViewSet
+class CustomTierViewSet(viewsets.ModelViewSet):
     queryset = CustomTier.objects.all()
     serializer_class = CustomTierSerializer
-
-class ImageUploadView(APIView):
-    parser_classes = (MultiPartParser,)
-
-    def post(self, request, format=None):
-        serializer = ImageSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
