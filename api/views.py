@@ -16,3 +16,17 @@ class TierViewSet(viewsets.ModelViewSet):
 class CustomTierViewSet(viewsets.ModelViewSet):
     queryset = CustomTier.objects.all()
     serializer_class = CustomTierSerializer
+
+class ImageUploadView(APIView):
+    parser_classes = (MultiPartParser,)
+
+    def post(self, request, format=None):
+        serializer = ImageSerializer(data=request.data)
+        if serializer.is_valid():
+            image = serializer.save(user=request.user)
+
+            # Generate links based on user's tier
+            image.generate_links()
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
