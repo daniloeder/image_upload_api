@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User as DjangoUser
-from .models import Image, Tier, CustomTier  # Import CustomTier
+from .models import Image, Tier, CustomTier
 
 class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff')
@@ -21,6 +21,6 @@ class ImageAdmin(admin.ModelAdmin):
 class TierAdmin(admin.ModelAdmin):
     list_display = ('name', 'allow_original_link', 'allow_expiring_link')
 
-@admin.register(CustomTier)  # Register the CustomTier model
+@admin.register(CustomTier)
 class CustomTierAdmin(admin.ModelAdmin):
     list_display = ('name', 'thumbnail_sizes', 'allow_original_link', 'allow_expiring_link', 'expiring_link_seconds')
