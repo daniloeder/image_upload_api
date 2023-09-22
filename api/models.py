@@ -24,6 +24,7 @@ class Image(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='uploads/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    expiring_link_seconds = models.PositiveIntegerField(null=True, blank=True, help_text="Expiring link duration in seconds (between 300 and 30000)")
 
     TIER_CHOICES = [
         ('Basic', 'Basic'),
@@ -32,7 +33,6 @@ class Image(models.Model):
     ]
 
     tier = models.CharField(max_length=20, choices=TIER_CHOICES)
-    expiring_link_seconds = models.PositiveIntegerField(null=True, blank=True, help_text="Expiring link duration in seconds (between 300 and 30000)")
 
     def generate_links(self):
         if self.tier == 'Basic':
@@ -45,7 +45,7 @@ class Image(models.Model):
             self.basic_link = self.generate_basic_link()
             self.premium_link = self.generate_premium_link()
             self.original_link = self.generate_original_link()
-            self.expiring_link_seconds = self.generate_expiring_link_seconds()
+            self.expiring_link = self.generate_expiring_link()
 
         self.save()
 
@@ -61,6 +61,11 @@ class Image(models.Model):
         # Generate and return the original link
         return "Original Link Here"
 
-    def generate_expiring_link_seconds(self):
-        # Generate and return the expiring link seconds
-        return 3600
+    def generate_expiring_link(self):
+        # Generate and return the expiring link
+        # This function should be implemented according to your specific needs
+        pass
+
+    def __str__(self):
+        return self.image.name
+
