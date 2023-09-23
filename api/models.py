@@ -35,6 +35,7 @@ class Image(models.Model):
     tier = models.CharField(max_length=20, choices=TIER_CHOICES)
 
     def generate_links(self):
+        """Generates and sets the basic_link, premium_link, original_link, and expiring_link fields according to the user tier."""
         if self.tier == 'Basic':
             self.basic_link = self.generate_basic_link()
         elif self.tier == 'Premium':
@@ -68,4 +69,3 @@ class Image(models.Model):
 
     def __str__(self):
         return self.image.name
-
