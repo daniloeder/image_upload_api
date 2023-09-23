@@ -51,21 +51,22 @@ class Image(models.Model):
         self.save()
 
     def generate_basic_link(self):
-        # Generate and return the basic link
-        return "Basic Link Here"
+        """Generates a link to a thumbnail that is 200px in height."""
+        thumbnail_url = "http://localhost:8000/api/images/thumbnails/basic_{}_{}".format(200, self.image.name)
+        return thumbnail_url
 
     def generate_premium_link(self):
-        # Generate and return the premium link
-        return "Premium Link Here"
+        """Generates a link to a thumbnail that is 200px in height and a link to a thumbnail that is 400px in height."""
+        thumbnail_200px_url = "http://localhost:8000/api/images/thumbnails/basic_{}_{}".format(200, self.image.name)
+        thumbnail_400px_url = "http://localhost:8000/api/images/thumbnails/basic_{}_{}".format(400, self.image.name)
+        return [thumbnail_200px_url, thumbnail_400px_url]
 
     def generate_original_link(self):
-        # Generate and return the original link
-        return "Original Link Here"
+        """Generates a link to the originally uploaded image."""
+        original_link = "http://localhost:8000/api/images/uploads/{}".format(self.image.name)
+        return original_link
 
     def generate_expiring_link(self):
-        # Generate and return the expiring link
-        # This function should be implemented according to your specific needs
-        pass
-
-    def __str__(self):
-        return self.image.name
+        """Generates an expiring link to the image. The link expires after a given number of seconds, which can be specified by the user."""
+        expiring_link = "http://localhost:8000/api/images/expiring/{}/{}".format(self.image.name, self.expiring_link_seconds)
+        return expiring_link
