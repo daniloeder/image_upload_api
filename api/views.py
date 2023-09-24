@@ -2,8 +2,8 @@ from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
-from .models import Image, Tier, CustomTier
-from .serializers import ImageSerializer, TierSerializer, CustomTierSerializer
+from .models import Image, Tier
+from .serializers import ImageSerializer, TierSerializer
 
 class ImageViewSet(viewsets.ModelViewSet):
     queryset = Image.objects.all()
@@ -31,10 +31,6 @@ class TierViewSet(viewsets.ModelViewSet):
     queryset = Tier.objects.all()
     serializer_class = TierSerializer
 
-class CustomTierViewSet(viewsets.ModelViewSet):
-    queryset = CustomTier.objects.all()
-    serializer_class = CustomTierSerializer
-
 class ImageUploadView(APIView):
     parser_classes = (MultiPartParser,)
 
@@ -48,4 +44,3 @@ class ImageUploadView(APIView):
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-

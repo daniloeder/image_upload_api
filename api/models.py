@@ -3,22 +3,19 @@ from django.db import models
 
 class Tier(models.Model):
     name = models.CharField(max_length=100)
-    thumbnail_sizes = models.CharField(max_length=255, help_text="Comma-separated list of thumbnail sizes (e.g., '200x200,400x400')")
-    allow_original_link = models.BooleanField()
-    allow_expiring_link = models.BooleanField()
+    thumbnail_sizes = models.BooleanField(help_text="Allow arbitrary thumbnail sizes")
+    allow_original_link = models.BooleanField(help_text="Allow presence of the link to the originally uploaded file")
+    allow_expiring_link = models.BooleanField(help_text="Allow ability to generate expiring links")
 
     def __str__(self):
         return self.name
 
-class CustomTier(models.Model):
-    name = models.CharField(max_length=100)
-    thumbnail_sizes = models.CharField(max_length=255, help_text="Comma-separated list of thumbnail sizes (e.g., '200x200,400x400')")
-    allow_original_link = models.BooleanField()
-    allow_expiring_link = models.BooleanField()
-    expiring_link_seconds = models.PositiveIntegerField(help_text="Expiring link duration in seconds (between 300 and 30000)")
 
-    def __str__(self):
-        return self.name
+def get_tiers():
+    """Returns a list of all tiers."""
+    tiers = Tier.objects.all()
+    return tiers
+
 
 class Image(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -27,25 +24,25 @@ class Image(models.Model):
     expiring_link_seconds = models.PositiveIntegerField(null=True, blank=True, help_text="Expiring link duration in seconds (between 300 and 30000)")
 
     TIER_CHOICES = [
-        ('Basic', 'Basic'),
-        ('Premium', 'Premium'),
-        ('Enterprise', 'Enterprise'),
+        (tier.name, tier.name) for tier in get_tiers()
     ]
 
     tier = models.CharField(max_length=20, choices=TIER_CHOICES)
 
     def generate_links(self):
         """Generates and sets the basic_link, premium_link, original_link, and expiring_link fields according to the user tier."""
-        if self.tier == 'Basic':
-            self.basic_link = self.generate_basic_link()
-        elif self.tier == 'Premium':
-            self.basic_link = self.generate_basic_link()
-            self.premium_link = self.generate_premium_link()
-            self.original_link = self.generate_original_link()
+        
+        self.link_200px = self.generate_basic_link()
+
+        if self.tier == 'Premium':
+            self.link_400px = self.generate_premium_link()
         elif self.tier == 'Enterprise':
-            self.basic_link = self.generate_basic_link()
-            self.premium_link = self.generate_premium_link()
+            self.link_400px = self.generate_premium_link()
+
+        if self.tier.allow_original_link:
             self.original_link = self.generate_original_link()
+
+        if self.tier.allow_expiring_link:
             self.expiring_link = self.generate_expiring_link()
 
         self.save()
@@ -57,9 +54,8 @@ class Image(models.Model):
 
     def generate_premium_link(self):
         """Generates a link to a thumbnail that is 200px in height and a link to a thumbnail that is 400px in height."""
-        thumbnail_200px_url = "http://localhost:8000/api/images/thumbnails/basic_{}_{}".format(200, self.image.name)
         thumbnail_400px_url = "http://localhost:8000/api/images/thumbnails/basic_{}_{}".format(400, self.image.name)
-        return [thumbnail_200px_url, thumbnail_400px_url]
+        return thumbnail_400px_url
 
     def generate_original_link(self):
         """Generates a link to the originally uploaded image."""
