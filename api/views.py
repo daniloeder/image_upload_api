@@ -12,17 +12,13 @@ class ImageViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, pk=None):
         image = super().retrieve(request, pk).data
 
-        # Generate an expiring link if the user is an Enterprise user
         if image['tier'] == 'Enterprise':
             image['expiring_link'] = self.generate_expiring_link(image['id'])
 
         return Response(image)
 
     def generate_expiring_link(self, image_id):
-        # Generate a pre-signed URL for the image
         url = generate_presigned_url(image_id)
-
-        # Set the expiration time
         url.expires_in = image['expiring_link_seconds']
 
         return url
@@ -38,8 +34,6 @@ class ImageUploadView(APIView):
         serializer = ImageSerializer(data=request.data)
         if serializer.is_valid():
             image = serializer.save(user=request.user)
-
-            # Generate links based on user's tier
             image.generate_links()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)

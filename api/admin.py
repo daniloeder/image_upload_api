@@ -6,8 +6,7 @@ from .models import Image, Tier
 class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff')
 
-# Register your custom UserAdmin class for the User model
-admin.site.unregister(DjangoUser)  # Unregister the default UserAdmin
+admin.site.unregister(DjangoUser)
 admin.site.register(DjangoUser, CustomUserAdmin)
 
 @admin.register(Image)
